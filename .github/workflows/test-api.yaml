@@ -7,16 +7,18 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:20.04
     services: 
+    # If we decide to use a container instead of the Runner Machine, then Docker will use the default ports by its own, so we 
+    # don't need to specify it.
       app:
         image: alialaa17/simple-node-api
-        ports: 
-          - 3001:3000
+        # ports: 
+          # - 3001:3000
         env:
           MONGO_HOSTNAME: mongo
       mongo:
         image: mongo
-        ports:
-          - 27017:27017
+        # ports:
+          # - 27017:27017
     steps:
       - name: Install curl
         run: |
@@ -24,8 +26,9 @@ jobs:
           apt-get -y install curl
       - name: Dump Services Context
         run: echo $'${{ toJson(job.services) }}'
+        # Instead of using http://localhost:3001; when using a container, we can use http://app:3000, in this case
       - name: Post a new user
-        run: 'curl -X POST http://localhost:3001/api/users -H ''Content-Type: application/json'' -d ''{"username": "hello","address": "world"}'''
+        run: 'curl -X POST http://app:3000/api/users -H ''Content-Type: application/json'' -d ''{"username": "hello","address": "world"}'''
       - name: Get Users
-        run: curl http://localhost:3001/api/users
+        run: curl http://app:3000/api/users
 
