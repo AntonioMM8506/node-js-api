@@ -5,6 +5,7 @@ on: [push, workflow_dispatch]
 jobs:
   test-api:
     runs-on: ubuntu-latest
+    container: ubuntu:20.04
     services: 
       app:
         image: alialaa17/simple-node-api
@@ -16,7 +17,6 @@ jobs:
         image: mongo
         ports:
           - 27017:27017
-    # the steps are gonna run in the runner machine directly, because we have not defined a container
     steps:
       - name: Dump Services Context
         run: echo $'${{ toJson(job.services) }}'
